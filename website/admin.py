@@ -1,6 +1,16 @@
 from django.contrib import admin
 from .models import Product, ContactMessage
 
+from .models import (
+    Product,
+    ContactMessage,
+    Cart,
+    CartItem,
+)
+from .models import Order, OrderItem
+
+admin.site.register(Order)
+admin.site.register(OrderItem)
 
 
 @admin.register(Product)
@@ -46,6 +56,38 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
     ordering = (
         "-created_at",
+    )
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "created_at",
+    )
+
+    ordering = (
+        "-created_at",
+    )
+
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "cart",
+        "product",
+        "quantity",
+        "total_price",
+    )
+
+    list_filter = (
+        "cart",
+    )
+
+    search_fields = (
+        "product__name",
     )
 
 # Register your models here.

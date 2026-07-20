@@ -1,18 +1,7 @@
 from django.contrib import admin
-from .models import Product, ContactMessage
+from .models import Product, ContactMessage, Cart, CartItem, Order, OrderItem
 
-from .models import (
-    Product,
-    ContactMessage,
-    Cart,
-    CartItem,
-)
-from .models import Order, OrderItem
-
-admin.site.register(Order)
-admin.site.register(OrderItem)
-
-
+# 1. Product Admin
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
@@ -21,20 +10,19 @@ class ProductAdmin(admin.ModelAdmin):
         "featured",
         "available",
     )
-
     list_filter = (
         "featured",
         "available",
     )
-
     search_fields = (
         "name",
     )
-
     prepopulated_fields = {
         "slug": ("name",)
     }
 
+
+# 2. Contact Message Admin
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = (
@@ -43,30 +31,26 @@ class ContactMessageAdmin(admin.ModelAdmin):
         "subject",
         "created_at",
     )
-
     search_fields = (
         "name",
         "email",
         "subject",
     )
-
     list_filter = (
         "created_at",
     )
-
     ordering = (
         "-created_at",
     )
 
 
+# 3. Cart & CartItem Admin
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-
     list_display = (
         "id",
         "created_at",
     )
-
     ordering = (
         "-created_at",
     )
@@ -74,20 +58,25 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
-
     list_display = (
         "cart",
         "product",
         "quantity",
         "total_price",
     )
-
     list_filter = (
         "cart",
     )
-
     search_fields = (
         "product__name",
     )
 
-# Register your models here.
+
+# 4. Order & OrderItem Admin
+admin.site.register(OrderItem)  # OrderItem simple register kar diya
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'status', 'total', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('name', 'email', 'id')

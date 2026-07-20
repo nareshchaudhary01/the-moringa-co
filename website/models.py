@@ -120,6 +120,7 @@ class Order(models.Model):
     ("Processing", "Processing"),
     ("Shipped", "Shipped"),
     ("Delivered", "Delivered"),
+    ("Cancelled", "Cancelled"),
     ]
     
     total = models.DecimalField(max_digits=10, decimal_places=2)
@@ -153,6 +154,10 @@ class OrderItem(models.Model):
     @property
     def subtotal(self):
         return self.price * self.quantity
+
+    @property
+    def can_cancel(self):
+        return self.status in ["Pending", "Processing"]
 
     def __str__(self):
         return self.product.name

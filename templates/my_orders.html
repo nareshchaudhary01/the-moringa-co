@@ -30,16 +30,26 @@
                     ₹{{ order.total }}
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <!-- Dynamic Status Badge -->
                     <span class="badge 
                         {% if order.status == 'Pending' %}bg-warning text-dark
                         {% elif order.status == 'Processing' %}bg-info text-dark
                         {% elif order.status == 'Shipped' %}bg-primary
                         {% elif order.status == 'Delivered' %}bg-success
+                        {% elif order.status == 'Cancelled' %}bg-danger
                         {% else %}bg-secondary{% endif %}">
                         {{ order.get_status_display }}
                     </span>
+                </div>
+                <div class="col-md-3 text-end">
+                    {% if order.status == 'Pending' or order.status == 'Processing' %}
+                        <a href="{% url 'cancel_order' order.id %}" 
+                        class="btn btn-sm btn-danger fw-bold shadow-sm"
+                        onclick="return confirm('Are you sure you want to cancel Order #{{ order.id }}?');">
+                            Cancel Order
+                        </a>
+                    {% endif %}
                 </div>
 
             </div>

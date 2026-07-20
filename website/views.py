@@ -7,6 +7,9 @@ from django.contrib.auth import login
 from .forms import SignupForm
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -235,4 +238,28 @@ def my_orders(request):
             "orders": orders
         }
     )
+
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status in ["Pending", "Processing"]:
+        order.status = "Cancelled"
+        order.save()
+        
+        # EMAIL BHEJNE KA CODE
+        send_mail(
+            subject=f'Alert: Order #{order.id} Cancelled!',
+            message=f'User {order.name} has cancelled Order #{order.id}. Total amount: {order.total}',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=['apka_email@gmail.com'], # Yahan apna email dalo
+            fail_silently=False,
+        )
+        
+        messages.success(request, f"Order #{order.id} has been cancelled successfully.")
+    else:
+        messages.error(request, "Cannot cancel this order.")
+
+    return redirect('my_orders')
 # Create your views here.
